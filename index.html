@@ -87,10 +87,10 @@
                     <span class="ml-3 text-xl font-bold text-white">Long Island Fishing Club</span>
                 </div>
                 <div class="hidden md:block">
-                    <div class="ml-10 flex items-baseline space-x-4">
-                        <a href="#" class="bg-gray-900 text-white px-3 py-2 rounded-md text-sm font-medium">Dashboard</a>
-                        <a href="#" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Catch Log</a>
-                        <a href="#" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Gallery</a>
+                    <div id="main-nav" class="ml-10 flex items-baseline space-x-4">
+                        <a href="#" id="nav-dashboard" class="nav-link bg-gray-900 text-white px-3 py-2 rounded-md text-sm font-medium">Dashboard</a>
+                        <a href="#" id="nav-catch-log" class="nav-link text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Catch Log</a>
+                        <a href="#" id="nav-gallery" class="nav-link text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Gallery</a>
                     </div>
                 </div>
             </div>
@@ -98,79 +98,94 @@
     </nav>
 
     <!-- Main Content Area -->
-    <main class="flex flex-grow pt-16">
-        <!-- Collapsible Sidebar -->
-        <div id="sidebar" class="bg-gray-800/70 backdrop-blur-md h-full transition-all duration-300 ease-in-out" style="width: 320px;">
-            <div class="p-4 flex flex-col h-full">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-lg font-semibold">Dashboard Controls</h2>
-                    <button id="collapse-btn" class="p-2 rounded-md hover:bg-gray-700">
-                        <i class="fas fa-chevron-left"></i>
-                    </button>
-                </div>
-                
-                <!-- Live Conditions Widget -->
-                <div class="bg-gray-900/50 p-4 rounded-lg text-center mb-4">
-                    <div class="flex items-center justify-center mb-2">
-                        <h3 class="text-md font-semibold mr-2">Live Conditions</h3>
-                        <div class="live-dot"></div>
+    <div id="app-content" class="flex-grow pt-16">
+        <!-- Dashboard Page -->
+        <main id="dashboard-page" class="page-content flex h-full">
+            <!-- Collapsible Sidebar -->
+            <div id="sidebar" class="bg-gray-800/70 backdrop-blur-md h-full transition-all duration-300 ease-in-out" style="width: 320px;">
+                <div class="p-4 flex flex-col h-full">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-lg font-semibold">Dashboard Controls</h2>
+                        <button id="collapse-btn" class="p-2 rounded-md hover:bg-gray-700">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
                     </div>
-                    <div id="live-conditions-data" class="grid grid-cols-3 gap-2 text-lg">
-                        <div>
-                            <div class="font-bold" id="temp-data">--°</div>
-                            <div class="text-xs text-gray-400">Temp</div>
+                    
+                    <!-- Live Conditions Widget -->
+                    <div class="bg-gray-900/50 p-4 rounded-lg text-center mb-4">
+                        <div class="flex items-center justify-center mb-2">
+                            <h3 class="text-md font-semibold mr-2">Live Conditions</h3>
+                            <div class="live-dot"></div>
                         </div>
-                        <div>
-                            <div class="font-bold" id="wind-data">--</div>
-                            <div class="text-xs text-gray-400">Wind</div>
-                        </div>
-                        <div class="flex flex-col items-center">
-                            <div class="font-bold flex items-center">
-                                <span id="dir-data">--</span>
-                                <i id="wind-arrow" class="fas fa-arrow-up ml-1 text-sm"></i>
+                        <div id="live-conditions-data" class="grid grid-cols-3 gap-2 text-lg">
+                            <div>
+                                <div class="font-bold" id="temp-data">--°</div>
+                                <div class="text-xs text-gray-400">Temp</div>
                             </div>
-                            <div class="text-xs text-gray-400">Direction</div>
+                            <div>
+                                <div class="font-bold" id="wind-data">--</div>
+                                <div class="text-xs text-gray-400">Wind</div>
+                            </div>
+                            <div class="flex flex-col items-center">
+                                <div class="font-bold flex items-center">
+                                    <span id="dir-data">--</span>
+                                    <i id="wind-arrow" class="fas fa-arrow-up ml-1 text-sm"></i>
+                                </div>
+                                <div class="text-xs text-gray-400">Direction</div>
+                            </div>
                         </div>
+                        <div id="selected-spot-name" class="mt-3 text-sm text-sky-400 font-medium h-5">Select a spot</div>
                     </div>
-                    <div id="selected-spot-name" class="mt-3 text-sm text-sky-400 font-medium h-5">Select a spot</div>
-                </div>
 
-                <!-- Moon Phase Widget -->
-                <div class="bg-gray-900/50 p-4 rounded-lg text-center mb-4">
-                     <h3 class="text-md font-semibold mb-2">Moon Phase</h3>
-                     <div class="flex items-center justify-center">
-                        <div id="moon-icon-container" class="w-12 h-12 mr-4">
-                            <!-- SVG Moon Icon will be injected here -->
-                        </div>
-                        <span id="moon-phase-name" class="font-semibold text-lg">--</span>
-                     </div>
-                </div>
+                    <!-- Moon Phase Widget -->
+                    <div class="bg-gray-900/50 p-4 rounded-lg text-center mb-4">
+                         <h3 class="text-md font-semibold mb-2">Moon Phase</h3>
+                         <div class="flex items-center justify-center">
+                            <div id="moon-icon-container" class="w-12 h-12 mr-4">
+                                <!-- SVG Moon Icon will be injected here -->
+                            </div>
+                            <span id="moon-phase-name" class="font-semibold text-lg">--</span>
+                         </div>
+                    </div>
 
-                <!-- Spot Intel Button -->
-                <button id="intel-btn" class="w-full bg-sky-600 hover:bg-sky-500 text-white font-bold py-2 px-4 rounded-lg transition duration-300 disabled:bg-gray-600 disabled:cursor-not-allowed mt-auto" disabled>
-                    Get Spot Intel
-                </button>
+                    <!-- Spot Intel Button -->
+                    <button id="intel-btn" class="w-full bg-sky-600 hover:bg-sky-500 text-white font-bold py-2 px-4 rounded-lg transition duration-300 disabled:bg-gray-600 disabled:cursor-not-allowed mt-auto" disabled>
+                        Get Spot Intel
+                    </button>
 
-                <!-- Fishing Spots Dropdown -->
-                <div class="flex-grow mt-4 overflow-y-auto">
-                     <details open>
-                        <summary class="font-semibold cursor-pointer py-2">Fishing Spots</summary>
-                        <div class="mt-2">
-                            <input type="text" id="spot-search" class="w-full bg-gray-700 border border-gray-600 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500" placeholder="Search spots...">
-                            <ul id="spots-list" class="mt-2 space-y-1 pr-2 overflow-y-auto" style="max-height: calc(100vh - 500px);">
-                            </ul>
-                        </div>
-                    </details>
+                    <!-- Fishing Spots Dropdown -->
+                    <div class="flex-grow mt-4 overflow-y-auto">
+                         <details open>
+                            <summary class="font-semibold cursor-pointer py-2">Fishing Spots</summary>
+                            <div class="mt-2">
+                                <input type="text" id="spot-search" class="w-full bg-gray-700 border border-gray-600 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500" placeholder="Search spots...">
+                                <ul id="spots-list" class="mt-2 space-y-1 pr-2 overflow-y-auto" style="max-height: calc(100vh - 500px);">
+                                </ul>
+                            </div>
+                        </details>
+                    </div>
                 </div>
             </div>
+
+            <!-- Sidebar Handle -->
+            <div id="sidebar-handle" class="sidebar-handle hidden"></div>
+
+            <!-- Interactive Map -->
+            <div id="map" class="flex-grow h-full z-10"></div>
+        </main>
+
+        <!-- Catch Log Page -->
+        <div id="catch-log-page" class="page-content hidden h-full p-8">
+            <h1 class="text-3xl font-bold text-white">Catch Log</h1>
+            <p class="mt-4 text-gray-400">This section is under construction. Soon you'll be able to log your catches here!</p>
         </div>
 
-        <!-- Sidebar Handle -->
-        <div id="sidebar-handle" class="sidebar-handle hidden"></div>
-
-        <!-- Interactive Map -->
-        <div id="map" class="flex-grow h-full z-10"></div>
-    </main>
+        <!-- Gallery Page -->
+        <div id="gallery-page" class="page-content hidden h-full p-8">
+            <h1 class="text-3xl font-bold text-white">Gallery</h1>
+            <p class="mt-4 text-gray-400">This section is under construction. Soon you'll be able to view a gallery of catches here!</p>
+        </div>
+    </div>
 
     <!-- AI Intel Modal -->
     <div id="intel-modal" class="fixed inset-0 bg-black bg-opacity-70 z-50 flex items-center justify-center p-4 hidden">
@@ -248,6 +263,8 @@ Hobart Beach,40.9278189,-73.402495`;
         const spotsList = document.getElementById('spots-list');
         const moonIconContainer = document.getElementById('moon-icon-container');
         const moonPhaseName = document.getElementById('moon-phase-name');
+        const navLinks = document.querySelectorAll('.nav-link');
+        const pages = document.querySelectorAll('.page-content');
 
         // --- State ---
         let map;
@@ -259,6 +276,7 @@ Hobart Beach,40.9278189,-73.402495`;
         // --- Initialization ---
         document.addEventListener('DOMContentLoaded', () => {
             updateMoonPhase();
+            setupNavigation();
         });
 
         function initMap() {
@@ -308,6 +326,27 @@ Hobart Beach,40.9278189,-73.402495`;
             intelBtn.addEventListener('click', openIntelModal);
             closeModalBtn.addEventListener('click', closeIntelModal);
             intelModal.addEventListener('click', (e) => { if (e.target === intelModal) closeIntelModal(); });
+        }
+
+        function setupNavigation() {
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const pageId = e.target.id.replace('nav-', '') + '-page';
+                    
+                    pages.forEach(page => {
+                        page.classList.add('hidden');
+                    });
+                    document.getElementById(pageId).classList.remove('hidden');
+
+                    navLinks.forEach(navLink => {
+                        navLink.classList.remove('bg-gray-900', 'text-white');
+                        navLink.classList.add('text-gray-300', 'hover:bg-gray-700', 'hover:text-white');
+                    });
+                    e.target.classList.add('bg-gray-900', 'text-white');
+                    e.target.classList.remove('text-gray-300', 'hover:bg-gray-700', 'hover:text-white');
+                });
+            });
         }
 
         function toggleSidebar() {
@@ -496,3 +535,4 @@ Hobart Beach,40.9278189,-73.402495`;
     </script>
 </body>
 </html>
+
