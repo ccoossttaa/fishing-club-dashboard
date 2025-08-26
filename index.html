@@ -1,506 +1,498 @@
-{\rtf1\ansi\ansicpg1252\cocoartf2822
-\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
-{\colortbl;\red255\green255\blue255;}
-{\*\expandedcolortbl;;}
-\margl1440\margr1440\vieww11520\viewh8400\viewkind0
-\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Long Island Fishing Club</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            overscroll-behavior: none;
+        }
+        .live-dot {
+            width: 10px;
+            height: 10px;
+            background-color: red;
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(255, 0, 0, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 0, 0, 0); }
+        }
+        .sidebar-handle {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 12px;
+            height: 80px;
+            background-color: #0ea5e9;
+            cursor: pointer;
+            z-index: 1001;
+            transform: translateY(-50%);
+            border-top-right-radius: 8px;
+            border-bottom-right-radius: 8px;
+            overflow: hidden;
+        }
+        .sidebar-handle::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: glimmer 2.5s infinite;
+        }
+        @keyframes glimmer {
+            0% { left: -100%; }
+            50% { left: 100%; }
+            100% { left: 100%; }
+        }
+        .modal {
+            transition: opacity 0.3s ease;
+        }
+        #map {
+            height: 100%;
+        }
+        /* Custom styles for the Google Maps InfoWindow */
+        .gm-style-iw-c {
+            padding: 8px !important;
+            border-radius: 8px !important;
+        }
+        .gm-style-iw-d {
+            overflow: hidden !important;
+        }
+        .info-window-content {
+            color: #000;
+            font-weight: 600;
+            text-align: center;
+        }
+        #wind-arrow {
+            transition: transform 0.5s ease-out;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-200 flex flex-col h-screen">
 
-\f0\fs24 \cf0 <!DOCTYPE html>\
-<html lang="en">\
-<head>\
-    <meta charset="UTF-8">\
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">\
-    <title>Long Island Fishing Club</title>\
-    <script src="https://cdn.tailwindcss.com"></script>\
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">\
-    <style>\
-        body \{\
-            font-family: 'Inter', sans-serif;\
-            overscroll-behavior: none;\
-        \}\
-        .live-dot \{\
-            width: 10px;\
-            height: 10px;\
-            background-color: red;\
-            border-radius: 50%;\
-            animation: pulse 1.5s infinite;\
-        \}\
-        @keyframes pulse \{\
-            0% \{ box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.7); \}\
-            70% \{ box-shadow: 0 0 0 10px rgba(255, 0, 0, 0); \}\
-            100% \{ box-shadow: 0 0 0 0 rgba(255, 0, 0, 0); \}\
-        \}\
-        .sidebar-handle \{\
-            position: absolute;\
-            top: 50%;\
-            left: 0;\
-            width: 12px;\
-            height: 80px;\
-            background-color: #0ea5e9;\
-            cursor: pointer;\
-            z-index: 1001;\
-            transform: translateY(-50%);\
-            border-top-right-radius: 8px;\
-            border-bottom-right-radius: 8px;\
-            overflow: hidden;\
-        \}\
-        .sidebar-handle::after \{\
-            content: '';\
-            position: absolute;\
-            top: 0;\
-            left: -100%;\
-            width: 100%;\
-            height: 100%;\
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);\
-            animation: glimmer 2.5s infinite;\
-        \}\
-        @keyframes glimmer \{\
-            0% \{ left: -100%; \}\
-            50% \{ left: 100%; \}\
-            100% \{ left: 100%; \}\
-        \}\
-        .modal \{\
-            transition: opacity 0.3s ease;\
-        \}\
-        #map \{\
-            height: 100%;\
-        \}\
-        /* Custom styles for the Google Maps InfoWindow */\
-        .gm-style-iw-c \{\
-            padding: 8px !important;\
-            border-radius: 8px !important;\
-        \}\
-        .gm-style-iw-d \{\
-            overflow: hidden !important;\
-        \}\
-        .info-window-content \{\
-            color: #000;\
-            font-weight: 600;\
-            text-align: center;\
-        \}\
-        #wind-arrow \{\
-            transition: transform 0.5s ease-out;\
-        \}\
-    </style>\
-</head>\
-<body class="bg-gray-900 text-gray-200 flex flex-col h-screen">\
-\
-    <!-- Top Navigation Bar -->\
-    <nav class="bg-gray-800/50 backdrop-blur-sm shadow-lg w-full fixed top-0 z-20">\
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">\
-            <div class="flex items-center justify-between h-16">\
-                <div class="flex items-center">\
-                    <i class="fas fa-anchor text-sky-400 text-2xl"></i>\
-                    <span class="ml-3 text-xl font-bold text-white">Long Island Fishing Club</span>\
-                </div>\
-                <div class="hidden md:block">\
-                    <div class="ml-10 flex items-baseline space-x-4">\
-                        <a href="#" class="bg-gray-900 text-white px-3 py-2 rounded-md text-sm font-medium">Dashboard</a>\
-                        <a href="#" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Catch Log</a>\
-                        <a href="#" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Gallery</a>\
-                    </div>\
-                </div>\
-            </div>\
-        </div>\
-    </nav>\
-\
-    <!-- Main Content Area -->\
-    <main class="flex flex-grow pt-16">\
-        <!-- Collapsible Sidebar -->\
-        <div id="sidebar" class="bg-gray-800/70 backdrop-blur-md h-full transition-all duration-300 ease-in-out" style="width: 320px;">\
-            <div class="p-4 flex flex-col h-full">\
-                <div class="flex justify-between items-center mb-4">\
-                    <h2 class="text-lg font-semibold">Dashboard Controls</h2>\
-                    <button id="collapse-btn" class="p-2 rounded-md hover:bg-gray-700">\
-                        <i class="fas fa-chevron-left"></i>\
-                    </button>\
-                </div>\
-                \
-                <!-- Live Conditions Widget -->\
-                <div class="bg-gray-900/50 p-4 rounded-lg text-center mb-4">\
-                    <div class="flex items-center justify-center mb-2">\
-                        <h3 class="text-md font-semibold mr-2">Live Conditions</h3>\
-                        <div class="live-dot"></div>\
-                    </div>\
-                    <div id="live-conditions-data" class="grid grid-cols-3 gap-2 text-lg">\
-                        <div>\
-                            <div class="font-bold" id="temp-data">--\'b0</div>\
-                            <div class="text-xs text-gray-400">Temp</div>\
-                        </div>\
-                        <div>\
-                            <div class="font-bold" id="wind-data">--</div>\
-                            <div class="text-xs text-gray-400">Wind</div>\
-                        </div>\
-                        <div class="flex flex-col items-center">\
-                            <div class="font-bold flex items-center">\
-                                <span id="dir-data">--</span>\
-                                <i id="wind-arrow" class="fas fa-arrow-up ml-1 text-sm"></i>\
-                            </div>\
-                            <div class="text-xs text-gray-400">Direction</div>\
-                        </div>\
-                    </div>\
-                    <div id="selected-spot-name" class="mt-3 text-sm text-sky-400 font-medium h-5">Select a spot</div>\
-                </div>\
-\
-                <!-- Moon Phase Widget -->\
-                <div class="bg-gray-900/50 p-4 rounded-lg text-center mb-4">\
-                     <h3 class="text-md font-semibold mb-2">Moon Phase</h3>\
-                     <div class="flex items-center justify-center">\
-                        <div id="moon-icon-container" class="w-12 h-12 mr-4">\
-                            <!-- SVG Moon Icon will be injected here -->\
-                        </div>\
-                        <span id="moon-phase-name" class="font-semibold text-lg">--</span>\
-                     </div>\
-                </div>\
-\
-                <!-- Spot Intel Button -->\
-                <button id="intel-btn" class="w-full bg-sky-600 hover:bg-sky-500 text-white font-bold py-2 px-4 rounded-lg transition duration-300 disabled:bg-gray-600 disabled:cursor-not-allowed mt-auto" disabled>\
-                    Get Spot Intel\
-                </button>\
-\
-                <!-- Fishing Spots Dropdown -->\
-                <div class="flex-grow mt-4 overflow-y-auto">\
-                     <details open>\
-                        <summary class="font-semibold cursor-pointer py-2">Fishing Spots</summary>\
-                        <div class="mt-2">\
-                            <input type="text" id="spot-search" class="w-full bg-gray-700 border border-gray-600 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500" placeholder="Search spots...">\
-                            <ul id="spots-list" class="mt-2 space-y-1 pr-2 overflow-y-auto" style="max-height: calc(100vh - 500px);">\
-                            </ul>\
-                        </div>\
-                    </details>\
-                </div>\
-            </div>\
-        </div>\
-\
-        <!-- Sidebar Handle -->\
-        <div id="sidebar-handle" class="sidebar-handle hidden"></div>\
-\
-        <!-- Interactive Map -->\
-        <div id="map" class="flex-grow h-full z-10"></div>\
-    </main>\
-\
-    <!-- AI Intel Modal -->\
-    <div id="intel-modal" class="fixed inset-0 bg-black bg-opacity-70 z-50 flex items-center justify-center p-4 hidden">\
-        <div class="bg-gray-800 rounded-xl shadow-2xl w-full max-w-lg max-h-[90vh] flex flex-col">\
-            <div class="p-4 border-b border-gray-700 flex justify-between items-center">\
-                <h3 id="modal-title" class="text-lg font-bold text-white">Spot Intel</h3>\
-                <button id="close-modal-btn" class="text-gray-400 hover:text-white">\
-                    <i class="fas fa-times text-2xl"></i>\
-                </button>\
-            </div>\
-            <div class="p-6 flex-grow overflow-y-auto">\
-                <div>\
-                    <h4 class="font-semibold text-sky-400 mb-2 flex items-center"><i class="fas fa-brain mr-2"></i>AI Fishing Intel</h4>\
-                    <div id="ai-intel-content" class="bg-gray-900/50 p-4 rounded-lg min-h-[150px] text-gray-300 whitespace-pre-wrap">\
-                        <div class="flex items-center justify-center h-full">\
-                            <i class="fas fa-spinner fa-spin text-2xl"></i>\
-                            <span class="ml-3">Generating expert advice...</span>\
-                        </div>\
-                    </div>\
-                </div>\
-            </div>\
-        </div>\
-    </div>\
-\
-    <script>\
-        // --- Configuration ---\
-        const GOOGLE_MAPS_API_KEY = "AIzaSyCCQ60HKzXRSmsSSNy-B9XOE4arwvGTMgI";\
-        const spotsDataCSV = `name,lat,lon\
-Old Inlet,40.7238088,-72.8974523\
-Orient Point,41.1617792,-72.2299889\
-Smiths Point Beach,40.7302913,-72.8701864\
-Smith Point Bridge,40.7371854,-72.867354\
-Holy Grounds,40.972421,-73.075195\
-Cedar Beach,40.9646594,-73.0425684\
-Shinnecock Inlet,40.8422708,-72.4780034\
-Moriches Inlet,40.766026,-72.7558046\
-Tides Beach,40.9662616,-72.9550845\
-Hallock Beach,40.9646409,-72.9422905\
-Wildwood State Park,40.966713,-72.7996511\
-Robert Moses State Park,40.6224128,-73.2615519\
-Kings Park Bluffs,40.9051305,-73.2313899\
-Cranes Neck,40.9672695,-73.1587646\
-Democrat Point,40.6264827,-73.3166259\
-Sore Thumb,40.6341259,-73.3112972\
-Miller Place Beach,40.9655183,-73.0091607\
-Captree State Park,40.6403493,-73.2541537\
-Montauk Point,41.0711119,-71.856227\
-Stony Brook Fishing Dock,40.9215088,-73.1496378\
-Orient Beach State Park,41.1296497,-72.2651075\
-Inlet Pond County Park,41.1100947,-72.3843242\
-Old Field Point,40.9772124,-73.1190976\
-Lloyd Point,40.9472472,-73.4854546\
-Lloyd Neck Lighthouse Remains,40.9148921,-73.4345283\
-Crab Meadow,40.9294177,-73.3249749\
-Bellport Wetlands,40.7585461,-72.9059306\
-Hallock State Park,40.9942598,-72.5965836\
-Cedar Beach County Park,41.0369045,-72.389484\
-Hobart Beach,40.9278189,-73.402495`;\
-\
-        // --- DOM Elements ---\
-        const sidebar = document.getElementById('sidebar');\
-        const collapseBtn = document.getElementById('collapse-btn');\
-        const sidebarHandle = document.getElementById('sidebar-handle');\
-        const spotSearch = document.getElementById('spot-search');\
-        const intelBtn = document.getElementById('intel-btn');\
-        const intelModal = document.getElementById('intel-modal');\
-        const closeModalBtn = document.getElementById('close-modal-btn');\
-        const tempData = document.getElementById('temp-data');\
-        const windData = document.getElementById('wind-data');\
-        const dirData = document.getElementById('dir-data');\
-        const windArrow = document.getElementById('wind-arrow');\
-        const selectedSpotName = document.getElementById('selected-spot-name');\
-        const aiIntelContent = document.getElementById('ai-intel-content');\
-        const modalTitle = document.getElementById('modal-title');\
-        const spotsList = document.getElementById('spots-list');\
-        const moonIconContainer = document.getElementById('moon-icon-container');\
-        const moonPhaseName = document.getElementById('moon-phase-name');\
-\
-        // --- State ---\
-        let map;\
-        let spots = [];\
-        let markers = \{\};\
-        let selectedSpot = null;\
-        let infoWindow;\
-\
-        // --- Initialization ---\
-        document.addEventListener('DOMContentLoaded', () => \{\
-            updateMoonPhase();\
-        \});\
-\
-        function initMap() \{\
-            const mapStyle = [\
-                \{ elementType: "geometry", stylers: [\{ color: "#242f3e" \}] \}, \{ elementType: "labels.text.stroke", stylers: [\{ color: "#242f3e" \}] \}, \{ elementType: "labels.text.fill", stylers: [\{ color: "#746855" \}] \}, \{ featureType: "administrative.locality", elementType: "labels.text.fill", stylers: [\{ color: "#d59563" \}] \}, \{ featureType: "poi", elementType: "labels.text.fill", stylers: [\{ color: "#d59563" \}] \}, \{ featureType: "poi.park", elementType: "geometry", stylers: [\{ color: "#263c3f" \}] \}, \{ featureType: "poi.park", elementType: "labels.text.fill", stylers: [\{ color: "#6b9a76" \}] \}, \{ featureType: "road", elementType: "geometry", stylers: [\{ color: "#38414e" \}] \}, \{ featureType: "road", elementType: "geometry.stroke", stylers: [\{ color: "#212a37" \}] \}, \{ featureType: "road", elementType: "labels.text.fill", stylers: [\{ color: "#9ca5b3" \}] \}, \{ featureType: "road.highway", elementType: "geometry", stylers: [\{ color: "#746855" \}] \}, \{ featureType: "road.highway", elementType: "geometry.stroke", stylers: [\{ color: "#1f2835" \}] \}, \{ featureType: "road.highway", elementType: "labels.text.fill", stylers: [\{ color: "#f3d19c" \}] \}, \{ featureType: "transit", elementType: "geometry", stylers: [\{ color: "#2f3948" \}] \}, \{ featureType: "transit.station", elementType: "labels.text.fill", stylers: [\{ color: "#d59563" \}] \}, \{ featureType: "water", elementType: "geometry", stylers: [\{ color: "#17263c" \}] \}, \{ featureType: "water", elementType: "labels.text.fill", stylers: [\{ color: "#515c6d" \}] \}, \{ featureType: "water", elementType: "labels.text.stroke", stylers: [\{ color: "#17263c" \}] \},\
-            ];\
-            map = new google.maps.Map(document.getElementById("map"), \{ center: \{ lat: 40.85, lng: -72.9 \}, zoom: 9, styles: mapStyle, disableDefaultUI: true, zoomControl: true \});\
-            infoWindow = new google.maps.InfoWindow(\{ maxWidth: 200 \});\
-            parseCSV();\
-            renderSpotsList();\
-            setupEventListeners();\
-        \}\
-\
-        function parseCSV() \{\
-            const rows = spotsDataCSV.trim().split('\\n');\
-            const headers = rows.shift().split(',');\
-            spots = rows.map(row => \{ const values = row.split(','); return headers.reduce((obj, header, i) => \{ obj[header] = values[i]; return obj; \}, \{\}); \});\
-        \}\
-        \
-        function renderSpotsList(filter = '') \{\
-            spotsList.innerHTML = '';\
-            Object.values(markers).forEach(marker => marker.setMap(null));\
-            markers = \{\};\
-            const filteredSpots = spots.filter(spot => spot.name.toLowerCase().includes(filter.toLowerCase()));\
-            if (filteredSpots.length === 0) \{\
-                spotsList.innerHTML = `<li class="text-gray-400 text-sm p-2">No spots found.</li>`;\
-            \} else \{\
-                filteredSpots.forEach(spot => \{\
-                    const lat = parseFloat(spot.lat);\
-                    const lon = parseFloat(spot.lon);\
-                    const li = document.createElement('li');\
-                    li.className = 'p-2 rounded-md hover:bg-sky-800/50 cursor-pointer text-sm';\
-                    li.textContent = spot.name;\
-                    li.addEventListener('click', () => handleSpotSelection(spot));\
-                    spotsList.appendChild(li);\
-                    const marker = new google.maps.Marker(\{ position: \{ lat: lat, lng: lon \}, map: map, title: spot.name, opacity: 0.7 \});\
-                    marker.addListener('click', () => handleSpotSelection(spot));\
-                    markers[spot.name] = marker;\
-                \});\
-            \}\
-        \}\
-\
-        function setupEventListeners() \{\
-            collapseBtn.addEventListener('click', toggleSidebar);\
-            sidebarHandle.addEventListener('click', toggleSidebar);\
-            spotSearch.addEventListener('input', (e) => renderSpotsList(e.target.value));\
-            intelBtn.addEventListener('click', openIntelModal);\
-            closeModalBtn.addEventListener('click', closeIntelModal);\
-            intelModal.addEventListener('click', (e) => \{ if (e.target === intelModal) closeIntelModal(); \});\
-        \}\
-\
-        function toggleSidebar() \{\
-            const isCollapsed = sidebar.style.width === '0px';\
-            sidebar.style.width = isCollapsed ? '320px' : '0px';\
-            sidebarHandle.classList.toggle('hidden', isCollapsed);\
-            setTimeout(() => \{ google.maps.event.trigger(map, 'resize'); \}, 300);\
-        \}\
-\
-        async function handleSpotSelection(spot) \{\
-            selectedSpot = spot;\
-            const lat = parseFloat(spot.lat);\
-            const lon = parseFloat(spot.lon);\
-            map.panTo(\{ lat, lng: lon \});\
-            if (map.getZoom() < 13) \{ map.setZoom(13); \}\
-            Object.values(markers).forEach(m => m.setOpacity(0.6));\
-            markers[spot.name].setOpacity(1.0);\
-            const contentString = `<div class="info-window-content">$\{spot.name\}</div>`;\
-            infoWindow.setContent(contentString);\
-            infoWindow.open(map, markers[spot.name]);\
-            selectedSpotName.textContent = spot.name;\
-            intelBtn.disabled = false;\
-            \
-            tempData.textContent = '...';\
-            windData.textContent = '...';\
-            dirData.textContent = '...';\
-            await fetchWeather(lat, lon);\
-        \}\
-\
-        async function fetchWeather(lat, lon) \{\
-            const apiUrl = `https://api.open-meteo.com/v1/forecast?latitude=$\{lat\}&longitude=$\{lon\}&current=temperature_2m,wind_speed_10m,wind_direction_10m&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch`;\
-            try \{\
-                const response = await fetch(apiUrl);\
-                if (!response.ok) throw new Error('Weather data not available');\
-                const data = await response.json();\
-                const current = data.current;\
-                tempData.textContent = `$\{Math.round(current.temperature_2m)\}\'b0`;\
-                windData.textContent = `$\{Math.round(current.wind_speed_10m)\}mph`;\
-                dirData.textContent = degreesToCardinal(current.wind_direction_10m);\
-                windArrow.style.transform = `rotate($\{current.wind_direction_10m\}deg)`;\
-            \} catch (error) \{\
-                console.error("Error fetching weather:", error);\
-                tempData.textContent = 'N/A';\
-                windData.textContent = 'N/A';\
-                dirData.textContent = 'N/A';\
-                selectedSpotName.textContent = "Weather data unavailable";\
-            \}\
-        \}\
-\
-        // --- Moon Phase Calculation and Display ---\
-        function getMoonPhase() \{\
-            const synodicMonth = 29.53058867;\
-            const knownNewMoon = new Date('2000-01-06T18:14:00Z').getTime();\
-            const now = new Date().getTime();\
-            const daysSinceNewMoon = (now - knownNewMoon) / (1000 * 60 * 60 * 24);\
-            const currentPhase = (daysSinceNewMoon / synodicMonth) % 1;\
-            const age = currentPhase * synodicMonth;\
-\
-            if (age < 1.84566) return \{ name: "New Moon", phase: "new" \};\
-            if (age < 5.53699) return \{ name: "Waxing Crescent", phase: "waxing-crescent" \};\
-            if (age < 9.22831) return \{ name: "First Quarter", phase: "first-quarter" \};\
-            if (age < 12.91963) return \{ name: "Waxing Gibbous", phase: "waxing-gibbous" \};\
-            if (age < 16.61096) return \{ name: "Full Moon", phase: "full" \};\
-            if (age < 20.30228) return \{ name: "Waning Gibbous", phase: "waning-gibbous" \};\
-            if (age < 23.99361) return \{ name: "Third Quarter", phase: "third-quarter" \};\
-            if (age < 27.68493) return \{ name: "Waning Crescent", phase: "waning-crescent" \};\
-            return \{ name: "New Moon", phase: "new" \};\
-        \}\
-\
-        function updateMoonPhase() \{\
-            const phaseInfo = getMoonPhase();\
-            moonPhaseName.textContent = phaseInfo.name;\
-            moonIconContainer.innerHTML = createMoonSVG(phaseInfo.phase);\
-        \}\
-\
-        function createMoonSVG(phase) \{\
-            const svgNS = "http://www.w3.org/2000/svg";\
-            const svg = document.createElementNS(svgNS, "svg");\
-            svg.setAttribute("viewBox", "0 0 100 100");\
-            svg.setAttribute("width", "100%");\
-            svg.setAttribute("height", "100%");\
-\
-            const defs = document.createElementNS(svgNS, "defs");\
-            const clipPath = document.createElementNS(svgNS, "clipPath");\
-            clipPath.id = "moonClip";\
-            const clipCircle = document.createElementNS(svgNS, "circle");\
-            clipCircle.setAttribute("cx", "50");\
-            clipCircle.setAttribute("cy", "50");\
-            clipCircle.setAttribute("r", "50");\
-            clipPath.appendChild(clipCircle);\
-            defs.appendChild(clipPath);\
-            svg.appendChild(defs);\
-\
-            const mainCircle = document.createElementNS(svgNS, "circle");\
-            mainCircle.setAttribute("cx", "50");\
-            mainCircle.setAttribute("cy", "50");\
-            mainCircle.setAttribute("r", "50");\
-            mainCircle.setAttribute("fill", "#e2e8f0"); // Light gray for the moon body\
-            mainCircle.setAttribute("clip-path", "url(#moonClip)");\
-            svg.appendChild(mainCircle);\
-\
-            const shadow = document.createElementNS(svgNS, "path");\
-            shadow.setAttribute("fill", "#1e293b"); // Dark gray for the shadow\
-            shadow.setAttribute("clip-path", "url(#moonClip)");\
-            \
-            let d = "";\
-            switch(phase) \{\
-                case "new": d = "M 50 0 A 50 50 0 1 0 50 100 A 50 50 0 1 0 50 0 Z"; break;\
-                case "waxing-crescent": d = "M 50 0 A 50 50 0 1 0 50 100 A 25 50 0 1 1 50 0 Z"; break;\
-                case "first-quarter": d = "M 50 0 A 50 50 0 1 0 50 100 L 50 0 Z"; break;\
-                case "waxing-gibbous": d = "M 50 0 A 50 50 0 1 0 50 100 A 25 50 0 1 0 50 0 Z"; break;\
-                case "full": d = ""; break; // No shadow\
-                case "waning-gibbous": d = "M 50 0 A 50 50 0 1 1 50 100 A 25 50 0 1 1 50 0 Z"; break;\
-                case "third-quarter": d = "M 50 0 L 50 100 A 50 50 0 1 1 50 0 Z"; break;\
-                case "waning-crescent": d = "M 50 0 A 50 50 0 1 1 50 100 A 25 50 0 1 0 50 0 Z"; break;\
-            \}\
-            if (d) \{\
-                shadow.setAttribute("d", d);\
-                svg.appendChild(shadow);\
-            \}\
-            return svg.outerHTML;\
-        \}\
-\
-\
-        function openIntelModal() \{\
-            if (!selectedSpot) return;\
-            intelModal.classList.remove('hidden');\
-            modalTitle.textContent = `$\{selectedSpot.name\} - Intel`;\
-            aiIntelContent.innerHTML = `<div class="flex items-center justify-center h-full"><i class="fas fa-spinner fa-spin text-2xl"></i><span class="ml-3">Generating expert advice...</span></div>`;\
-            fetchAIIntel();\
-        \}\
-\
-        function closeIntelModal() \{\
-            intelModal.classList.add('hidden');\
-        \}\
-\
-        async function fetchAIIntel() \{\
-            const weatherSummary = `Current conditions are: $\{tempData.textContent\}F, Wind $\{windData.textContent\} from the $\{dirData.textContent\}.`;\
-            const prompt = `You are a seasoned Long Island fishing expert. Based on the location "$\{selectedSpot.name\}" and the following live conditions, provide a brief, actionable fishing tip. Focus on species to target, potential baits or lures, and specific techniques. Keep it concise and to the point. \\n\\n$\{weatherSummary\}`;\
-            try \{\
-                const responseText = await callGeminiAPI(prompt);\
-                aiIntelContent.textContent = responseText;\
-            \} catch (error) \{\
-                console.error("Error fetching AI Intel:", error);\
-                aiIntelContent.textContent = "Could not retrieve AI fishing intel at this time. Please try again later.";\
-            \}\
-        \}\
-\
-        async function callGeminiAPI(prompt) \{\
-             const apiKey = "";\
-             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=$\{apiKey\}`;\
-             const payload = \{ contents: [\{ parts: [\{ text: prompt \}] \}] \};\
-             let response;\
-             let delay = 1000;\
-             for (let i = 0; i < 5; i++) \{\
-                 try \{\
-                     response = await fetch(apiUrl, \{ method: 'POST', headers: \{ 'Content-Type': 'application/json' \}, body: JSON.stringify(payload) \});\
-                     if (response.ok) \{\
-                         const result = await response.json();\
-                         if (result.candidates?.[0]?.content?.parts?.[0]?.text) \{ return result.candidates[0].content.parts[0].text; \} \
-                         else \{ throw new Error('Invalid API response structure'); \}\
-                     \} else if (response.status === 429 || response.status >= 500) \{\
-                         await new Promise(resolve => setTimeout(resolve, delay));\
-                         delay *= 2;\
-                     \} else \{ throw new Error(`API request failed with status $\{response.status\}`); \}\
-                 \} catch (error) \{\
-                     if (i === 4) throw error;\
-                     await new Promise(resolve => setTimeout(resolve, delay));\
-                     delay *= 2;\
-                 \}\
-             \}\
-             throw new Error('AI request failed after multiple retries.');\
-        \}\
-\
-        function degreesToCardinal(deg) \{\
-            const cardinals = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW', 'N'];\
-            return cardinals[Math.round(deg / 22.5)];\
-        \}\
-\
-        // Dynamically load the Google Maps script\
-        const script = document.createElement('script');\
-        script.async = true;\
-        script.src = `https://maps.googleapis.com/maps/api/js?key=$\{GOOGLE_MAPS_API_KEY\}&callback=initMap`;\
-        document.head.appendChild(script);\
-\
-    </script>\
-</body>\
-</html>\
-}
+    <!-- Top Navigation Bar -->
+    <nav class="bg-gray-800/50 backdrop-blur-sm shadow-lg w-full fixed top-0 z-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <i class="fas fa-anchor text-sky-400 text-2xl"></i>
+                    <span class="ml-3 text-xl font-bold text-white">Long Island Fishing Club</span>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="#" class="bg-gray-900 text-white px-3 py-2 rounded-md text-sm font-medium">Dashboard</a>
+                        <a href="#" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Catch Log</a>
+                        <a href="#" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Gallery</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="flex flex-grow pt-16">
+        <!-- Collapsible Sidebar -->
+        <div id="sidebar" class="bg-gray-800/70 backdrop-blur-md h-full transition-all duration-300 ease-in-out" style="width: 320px;">
+            <div class="p-4 flex flex-col h-full">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-lg font-semibold">Dashboard Controls</h2>
+                    <button id="collapse-btn" class="p-2 rounded-md hover:bg-gray-700">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                </div>
+                
+                <!-- Live Conditions Widget -->
+                <div class="bg-gray-900/50 p-4 rounded-lg text-center mb-4">
+                    <div class="flex items-center justify-center mb-2">
+                        <h3 class="text-md font-semibold mr-2">Live Conditions</h3>
+                        <div class="live-dot"></div>
+                    </div>
+                    <div id="live-conditions-data" class="grid grid-cols-3 gap-2 text-lg">
+                        <div>
+                            <div class="font-bold" id="temp-data">--°</div>
+                            <div class="text-xs text-gray-400">Temp</div>
+                        </div>
+                        <div>
+                            <div class="font-bold" id="wind-data">--</div>
+                            <div class="text-xs text-gray-400">Wind</div>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <div class="font-bold flex items-center">
+                                <span id="dir-data">--</span>
+                                <i id="wind-arrow" class="fas fa-arrow-up ml-1 text-sm"></i>
+                            </div>
+                            <div class="text-xs text-gray-400">Direction</div>
+                        </div>
+                    </div>
+                    <div id="selected-spot-name" class="mt-3 text-sm text-sky-400 font-medium h-5">Select a spot</div>
+                </div>
+
+                <!-- Moon Phase Widget -->
+                <div class="bg-gray-900/50 p-4 rounded-lg text-center mb-4">
+                     <h3 class="text-md font-semibold mb-2">Moon Phase</h3>
+                     <div class="flex items-center justify-center">
+                        <div id="moon-icon-container" class="w-12 h-12 mr-4">
+                            <!-- SVG Moon Icon will be injected here -->
+                        </div>
+                        <span id="moon-phase-name" class="font-semibold text-lg">--</span>
+                     </div>
+                </div>
+
+                <!-- Spot Intel Button -->
+                <button id="intel-btn" class="w-full bg-sky-600 hover:bg-sky-500 text-white font-bold py-2 px-4 rounded-lg transition duration-300 disabled:bg-gray-600 disabled:cursor-not-allowed mt-auto" disabled>
+                    Get Spot Intel
+                </button>
+
+                <!-- Fishing Spots Dropdown -->
+                <div class="flex-grow mt-4 overflow-y-auto">
+                     <details open>
+                        <summary class="font-semibold cursor-pointer py-2">Fishing Spots</summary>
+                        <div class="mt-2">
+                            <input type="text" id="spot-search" class="w-full bg-gray-700 border border-gray-600 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500" placeholder="Search spots...">
+                            <ul id="spots-list" class="mt-2 space-y-1 pr-2 overflow-y-auto" style="max-height: calc(100vh - 500px);">
+                            </ul>
+                        </div>
+                    </details>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar Handle -->
+        <div id="sidebar-handle" class="sidebar-handle hidden"></div>
+
+        <!-- Interactive Map -->
+        <div id="map" class="flex-grow h-full z-10"></div>
+    </main>
+
+    <!-- AI Intel Modal -->
+    <div id="intel-modal" class="fixed inset-0 bg-black bg-opacity-70 z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-gray-800 rounded-xl shadow-2xl w-full max-w-lg max-h-[90vh] flex flex-col">
+            <div class="p-4 border-b border-gray-700 flex justify-between items-center">
+                <h3 id="modal-title" class="text-lg font-bold text-white">Spot Intel</h3>
+                <button id="close-modal-btn" class="text-gray-400 hover:text-white">
+                    <i class="fas fa-times text-2xl"></i>
+                </button>
+            </div>
+            <div class="p-6 flex-grow overflow-y-auto">
+                <div>
+                    <h4 class="font-semibold text-sky-400 mb-2 flex items-center"><i class="fas fa-brain mr-2"></i>AI Fishing Intel</h4>
+                    <div id="ai-intel-content" class="bg-gray-900/50 p-4 rounded-lg min-h-[150px] text-gray-300 whitespace-pre-wrap">
+                        <div class="flex items-center justify-center h-full">
+                            <i class="fas fa-spinner fa-spin text-2xl"></i>
+                            <span class="ml-3">Generating expert advice...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Configuration ---
+        const GOOGLE_MAPS_API_KEY = "AIzaSyCCQ60HKzXRSmsSSNy-B9XOE4arwvGTMgI";
+        const spotsDataCSV = `name,lat,lon
+Old Inlet,40.7238088,-72.8974523
+Orient Point,41.1617792,-72.2299889
+Smiths Point Beach,40.7302913,-72.8701864
+Smith Point Bridge,40.7371854,-72.867354
+Holy Grounds,40.972421,-73.075195
+Cedar Beach,40.9646594,-73.0425684
+Shinnecock Inlet,40.8422708,-72.4780034
+Moriches Inlet,40.766026,-72.7558046
+Tides Beach,40.9662616,-72.9550845
+Hallock Beach,40.9646409,-72.9422905
+Wildwood State Park,40.966713,-72.7996511
+Robert Moses State Park,40.6224128,-73.2615519
+Kings Park Bluffs,40.9051305,-73.2313899
+Cranes Neck,40.9672695,-73.1587646
+Democrat Point,40.6264827,-73.3166259
+Sore Thumb,40.6341259,-73.3112972
+Miller Place Beach,40.9655183,-73.0091607
+Captree State Park,40.6403493,-73.2541537
+Montauk Point,41.0711119,-71.856227
+Stony Brook Fishing Dock,40.9215088,-73.1496378
+Orient Beach State Park,41.1296497,-72.2651075
+Inlet Pond County Park,41.1100947,-72.3843242
+Old Field Point,40.9772124,-73.1190976
+Lloyd Point,40.9472472,-73.4854546
+Lloyd Neck Lighthouse Remains,40.9148921,-73.4345283
+Crab Meadow,40.9294177,-73.3249749
+Bellport Wetlands,40.7585461,-72.9059306
+Hallock State Park,40.9942598,-72.5965836
+Cedar Beach County Park,41.0369045,-72.389484
+Hobart Beach,40.9278189,-73.402495`;
+
+        // --- DOM Elements ---
+        const sidebar = document.getElementById('sidebar');
+        const collapseBtn = document.getElementById('collapse-btn');
+        const sidebarHandle = document.getElementById('sidebar-handle');
+        const spotSearch = document.getElementById('spot-search');
+        const intelBtn = document.getElementById('intel-btn');
+        const intelModal = document.getElementById('intel-modal');
+        const closeModalBtn = document.getElementById('close-modal-btn');
+        const tempData = document.getElementById('temp-data');
+        const windData = document.getElementById('wind-data');
+        const dirData = document.getElementById('dir-data');
+        const windArrow = document.getElementById('wind-arrow');
+        const selectedSpotName = document.getElementById('selected-spot-name');
+        const aiIntelContent = document.getElementById('ai-intel-content');
+        const modalTitle = document.getElementById('modal-title');
+        const spotsList = document.getElementById('spots-list');
+        const moonIconContainer = document.getElementById('moon-icon-container');
+        const moonPhaseName = document.getElementById('moon-phase-name');
+
+        // --- State ---
+        let map;
+        let spots = [];
+        let markers = {};
+        let selectedSpot = null;
+        let infoWindow;
+
+        // --- Initialization ---
+        document.addEventListener('DOMContentLoaded', () => {
+            updateMoonPhase();
+        });
+
+        function initMap() {
+            const mapStyle = [
+                { elementType: "geometry", stylers: [{ color: "#242f3e" }] }, { elementType: "labels.text.stroke", stylers: [{ color: "#242f3e" }] }, { elementType: "labels.text.fill", stylers: [{ color: "#746855" }] }, { featureType: "administrative.locality", elementType: "labels.text.fill", stylers: [{ color: "#d59563" }] }, { featureType: "poi", elementType: "labels.text.fill", stylers: [{ color: "#d59563" }] }, { featureType: "poi.park", elementType: "geometry", stylers: [{ color: "#263c3f" }] }, { featureType: "poi.park", elementType: "labels.text.fill", stylers: [{ color: "#6b9a76" }] }, { featureType: "road", elementType: "geometry", stylers: [{ color: "#38414e" }] }, { featureType: "road", elementType: "geometry.stroke", stylers: [{ color: "#212a37" }] }, { featureType: "road", elementType: "labels.text.fill", stylers: [{ color: "#9ca5b3" }] }, { featureType: "road.highway", elementType: "geometry", stylers: [{ color: "#746855" }] }, { featureType: "road.highway", elementType: "geometry.stroke", stylers: [{ color: "#1f2835" }] }, { featureType: "road.highway", elementType: "labels.text.fill", stylers: [{ color: "#f3d19c" }] }, { featureType: "transit", elementType: "geometry", stylers: [{ color: "#2f3948" }] }, { featureType: "transit.station", elementType: "labels.text.fill", stylers: [{ color: "#d59563" }] }, { featureType: "water", elementType: "geometry", stylers: [{ color: "#17263c" }] }, { featureType: "water", elementType: "labels.text.fill", stylers: [{ color: "#515c6d" }] }, { featureType: "water", elementType: "labels.text.stroke", stylers: [{ color: "#17263c" }] },
+            ];
+            map = new google.maps.Map(document.getElementById("map"), { center: { lat: 40.85, lng: -72.9 }, zoom: 9, styles: mapStyle, disableDefaultUI: true, zoomControl: true });
+            infoWindow = new google.maps.InfoWindow({ maxWidth: 200 });
+            parseCSV();
+            renderSpotsList();
+            setupEventListeners();
+        }
+
+        function parseCSV() {
+            const rows = spotsDataCSV.trim().split('\n');
+            const headers = rows.shift().split(',');
+            spots = rows.map(row => { const values = row.split(','); return headers.reduce((obj, header, i) => { obj[header] = values[i]; return obj; }, {}); });
+        }
+        
+        function renderSpotsList(filter = '') {
+            spotsList.innerHTML = '';
+            Object.values(markers).forEach(marker => marker.setMap(null));
+            markers = {};
+            const filteredSpots = spots.filter(spot => spot.name.toLowerCase().includes(filter.toLowerCase()));
+            if (filteredSpots.length === 0) {
+                spotsList.innerHTML = `<li class="text-gray-400 text-sm p-2">No spots found.</li>`;
+            } else {
+                filteredSpots.forEach(spot => {
+                    const lat = parseFloat(spot.lat);
+                    const lon = parseFloat(spot.lon);
+                    const li = document.createElement('li');
+                    li.className = 'p-2 rounded-md hover:bg-sky-800/50 cursor-pointer text-sm';
+                    li.textContent = spot.name;
+                    li.addEventListener('click', () => handleSpotSelection(spot));
+                    spotsList.appendChild(li);
+                    const marker = new google.maps.Marker({ position: { lat: lat, lng: lon }, map: map, title: spot.name, opacity: 0.7 });
+                    marker.addListener('click', () => handleSpotSelection(spot));
+                    markers[spot.name] = marker;
+                });
+            }
+        }
+
+        function setupEventListeners() {
+            collapseBtn.addEventListener('click', toggleSidebar);
+            sidebarHandle.addEventListener('click', toggleSidebar);
+            spotSearch.addEventListener('input', (e) => renderSpotsList(e.target.value));
+            intelBtn.addEventListener('click', openIntelModal);
+            closeModalBtn.addEventListener('click', closeIntelModal);
+            intelModal.addEventListener('click', (e) => { if (e.target === intelModal) closeIntelModal(); });
+        }
+
+        function toggleSidebar() {
+            const isCollapsed = sidebar.style.width === '0px';
+            sidebar.style.width = isCollapsed ? '320px' : '0px';
+            sidebarHandle.classList.toggle('hidden', isCollapsed);
+            setTimeout(() => { google.maps.event.trigger(map, 'resize'); }, 300);
+        }
+
+        async function handleSpotSelection(spot) {
+            selectedSpot = spot;
+            const lat = parseFloat(spot.lat);
+            const lon = parseFloat(spot.lon);
+            map.panTo({ lat, lng: lon });
+            if (map.getZoom() < 13) { map.setZoom(13); }
+            Object.values(markers).forEach(m => m.setOpacity(0.6));
+            markers[spot.name].setOpacity(1.0);
+            const contentString = `<div class="info-window-content">${spot.name}</div>`;
+            infoWindow.setContent(contentString);
+            infoWindow.open(map, markers[spot.name]);
+            selectedSpotName.textContent = spot.name;
+            intelBtn.disabled = false;
+            
+            tempData.textContent = '...';
+            windData.textContent = '...';
+            dirData.textContent = '...';
+            await fetchWeather(lat, lon);
+        }
+
+        async function fetchWeather(lat, lon) {
+            const apiUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,wind_speed_10m,wind_direction_10m&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch`;
+            try {
+                const response = await fetch(apiUrl);
+                if (!response.ok) throw new Error('Weather data not available');
+                const data = await response.json();
+                const current = data.current;
+                tempData.textContent = `${Math.round(current.temperature_2m)}°`;
+                windData.textContent = `${Math.round(current.wind_speed_10m)}mph`;
+                dirData.textContent = degreesToCardinal(current.wind_direction_10m);
+                windArrow.style.transform = `rotate(${current.wind_direction_10m}deg)`;
+            } catch (error) {
+                console.error("Error fetching weather:", error);
+                tempData.textContent = 'N/A';
+                windData.textContent = 'N/A';
+                dirData.textContent = 'N/A';
+                selectedSpotName.textContent = "Weather data unavailable";
+            }
+        }
+
+        // --- Moon Phase Calculation and Display ---
+        function getMoonPhase() {
+            const synodicMonth = 29.53058867;
+            const knownNewMoon = new Date('2000-01-06T18:14:00Z').getTime();
+            const now = new Date().getTime();
+            const daysSinceNewMoon = (now - knownNewMoon) / (1000 * 60 * 60 * 24);
+            const currentPhase = (daysSinceNewMoon / synodicMonth) % 1;
+            const age = currentPhase * synodicMonth;
+
+            if (age < 1.84566) return { name: "New Moon", phase: "new" };
+            if (age < 5.53699) return { name: "Waxing Crescent", phase: "waxing-crescent" };
+            if (age < 9.22831) return { name: "First Quarter", phase: "first-quarter" };
+            if (age < 12.91963) return { name: "Waxing Gibbous", phase: "waxing-gibbous" };
+            if (age < 16.61096) return { name: "Full Moon", phase: "full" };
+            if (age < 20.30228) return { name: "Waning Gibbous", phase: "waning-gibbous" };
+            if (age < 23.99361) return { name: "Third Quarter", phase: "third-quarter" };
+            if (age < 27.68493) return { name: "Waning Crescent", phase: "waning-crescent" };
+            return { name: "New Moon", phase: "new" };
+        }
+
+        function updateMoonPhase() {
+            const phaseInfo = getMoonPhase();
+            moonPhaseName.textContent = phaseInfo.name;
+            moonIconContainer.innerHTML = createMoonSVG(phaseInfo.phase);
+        }
+
+        function createMoonSVG(phase) {
+            const svgNS = "http://www.w3.org/2000/svg";
+            const svg = document.createElementNS(svgNS, "svg");
+            svg.setAttribute("viewBox", "0 0 100 100");
+            svg.setAttribute("width", "100%");
+            svg.setAttribute("height", "100%");
+
+            const defs = document.createElementNS(svgNS, "defs");
+            const clipPath = document.createElementNS(svgNS, "clipPath");
+            clipPath.id = "moonClip";
+            const clipCircle = document.createElementNS(svgNS, "circle");
+            clipCircle.setAttribute("cx", "50");
+            clipCircle.setAttribute("cy", "50");
+            clipCircle.setAttribute("r", "50");
+            clipPath.appendChild(clipCircle);
+            defs.appendChild(clipPath);
+            svg.appendChild(defs);
+
+            const mainCircle = document.createElementNS(svgNS, "circle");
+            mainCircle.setAttribute("cx", "50");
+            mainCircle.setAttribute("cy", "50");
+            mainCircle.setAttribute("r", "50");
+            mainCircle.setAttribute("fill", "#e2e8f0"); // Light gray for the moon body
+            mainCircle.setAttribute("clip-path", "url(#moonClip)");
+            svg.appendChild(mainCircle);
+
+            const shadow = document.createElementNS(svgNS, "path");
+            shadow.setAttribute("fill", "#1e293b"); // Dark gray for the shadow
+            shadow.setAttribute("clip-path", "url(#moonClip)");
+            
+            let d = "";
+            switch(phase) {
+                case "new": d = "M 50 0 A 50 50 0 1 0 50 100 A 50 50 0 1 0 50 0 Z"; break;
+                case "waxing-crescent": d = "M 50 0 A 50 50 0 1 0 50 100 A 25 50 0 1 1 50 0 Z"; break;
+                case "first-quarter": d = "M 50 0 A 50 50 0 1 0 50 100 L 50 0 Z"; break;
+                case "waxing-gibbous": d = "M 50 0 A 50 50 0 1 0 50 100 A 25 50 0 1 0 50 0 Z"; break;
+                case "full": d = ""; break; // No shadow
+                case "waning-gibbous": d = "M 50 0 A 50 50 0 1 1 50 100 A 25 50 0 1 1 50 0 Z"; break;
+                case "third-quarter": d = "M 50 0 L 50 100 A 50 50 0 1 1 50 0 Z"; break;
+                case "waning-crescent": d = "M 50 0 A 50 50 0 1 1 50 100 A 25 50 0 1 0 50 0 Z"; break;
+            }
+            if (d) {
+                shadow.setAttribute("d", d);
+                svg.appendChild(shadow);
+            }
+            return svg.outerHTML;
+        }
+
+
+        function openIntelModal() {
+            if (!selectedSpot) return;
+            intelModal.classList.remove('hidden');
+            modalTitle.textContent = `${selectedSpot.name} - Intel`;
+            aiIntelContent.innerHTML = `<div class="flex items-center justify-center h-full"><i class="fas fa-spinner fa-spin text-2xl"></i><span class="ml-3">Generating expert advice...</span></div>`;
+            fetchAIIntel();
+        }
+
+        function closeIntelModal() {
+            intelModal.classList.add('hidden');
+        }
+
+        async function fetchAIIntel() {
+            const weatherSummary = `Current conditions are: ${tempData.textContent}F, Wind ${windData.textContent} from the ${dirData.textContent}.`;
+            const prompt = `You are a seasoned Long Island fishing expert. Based on the location "${selectedSpot.name}" and the following live conditions, provide a brief, actionable fishing tip. Focus on species to target, potential baits or lures, and specific techniques. Keep it concise and to the point. \n\n${weatherSummary}`;
+            try {
+                const responseText = await callGeminiAPI(prompt);
+                aiIntelContent.textContent = responseText;
+            } catch (error) {
+                console.error("Error fetching AI Intel:", error);
+                aiIntelContent.textContent = "Could not retrieve AI fishing intel at this time. Please try again later.";
+            }
+        }
+
+        async function callGeminiAPI(prompt) {
+             const apiKey = "";
+             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+             const payload = { contents: [{ parts: [{ text: prompt }] }] };
+             let response;
+             let delay = 1000;
+             for (let i = 0; i < 5; i++) {
+                 try {
+                     response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                     if (response.ok) {
+                         const result = await response.json();
+                         if (result.candidates?.[0]?.content?.parts?.[0]?.text) { return result.candidates[0].content.parts[0].text; } 
+                         else { throw new Error('Invalid API response structure'); }
+                     } else if (response.status === 429 || response.status >= 500) {
+                         await new Promise(resolve => setTimeout(resolve, delay));
+                         delay *= 2;
+                     } else { throw new Error(`API request failed with status ${response.status}`); }
+                 } catch (error) {
+                     if (i === 4) throw error;
+                     await new Promise(resolve => setTimeout(resolve, delay));
+                     delay *= 2;
+                 }
+             }
+             throw new Error('AI request failed after multiple retries.');
+        }
+
+        function degreesToCardinal(deg) {
+            const cardinals = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW', 'N'];
+            return cardinals[Math.round(deg / 22.5)];
+        }
+
+        // Dynamically load the Google Maps script
+        const script = document.createElement('script');
+        script.async = true;
+        script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&callback=initMap`;
+        document.head.appendChild(script);
+
+    </script>
+</body>
+</html>
